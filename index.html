@@ -19,14 +19,14 @@
   --matsu: #2f4f3e;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; background: #0e2a28; }
+html, body { height: 100%; overflow: hidden; background: #14343a; }
 body { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; color: var(--ink); }
 #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 .hidden { display: none !important; }
 
 #vignette {
   position: fixed; inset: 0; pointer-events: none; z-index: 3;
-  background: radial-gradient(ellipse at 50% 42%, transparent 55%, rgba(8, 22, 20, 0.42) 100%);
+  background: radial-gradient(ellipse at 50% 42%, transparent 60%, rgba(10, 26, 28, 0.22) 100%);
 }
 
 /* ---------- HUD ---------- */
@@ -441,7 +441,7 @@ body { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; color: var(
       "blurb": "A small plunge pool under the cedars. The water runs cold and fast.",
       "unlock_catches": 0,
       "fish_count": 10,
-      "tint": "#3aa89a"
+      "tint": "#35b5ae"
     },
     {
       "id": 1,
@@ -450,7 +450,7 @@ body { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; color: var(
       "blurb": "A longer glide beneath leaning cedar. Amago hold behind the mid-stream boulder.",
       "unlock_catches": 3,
       "fish_count": 12,
-      "tint": "#34a095"
+      "tint": "#2aa9ab"
     },
     {
       "id": 2,
@@ -459,7 +459,7 @@ body { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; color: var(
       "blurb": "The deep green basin at the gorge mouth. Something large moves in the shadow.",
       "unlock_catches": 7,
       "fish_count": 12,
-      "tint": "#2a8484"
+      "tint": "#25929f"
     }
   ]
 }
@@ -670,7 +670,7 @@ function makeBoulders(rng, count, poolRadius, colliders) {
 // ---------- banks + cedar trees ----------
 function makeBanks(rng, poolRadius) {
   const group = new THREE.Group();
-  const bankMat = new THREE.MeshStandardMaterial({ color: 0x47543a, roughness: 1 });
+  const bankMat = new THREE.MeshStandardMaterial({ color: 0x67764d, roughness: 1 });
   bankMat.onBeforeCompile = (sh) => {
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', `#include <common>\nvarying vec3 vBw;
@@ -678,7 +678,7 @@ function makeBanks(rng, poolRadius) {
       .replace('#include <color_fragment>', `#include <color_fragment>
         float g = bkHash(floor(vBw.xz * 3.0)) * 0.5 + bkHash(floor(vBw.xz * 11.0)) * 0.5;
         diffuseColor.rgb *= 0.75 + 0.5 * g;
-        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.30, 0.26, 0.19), smoothstep(0.6, 0.2, vBw.y));`);
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.47, 0.44, 0.35), smoothstep(0.6, 0.2, vBw.y));`);
     sh.vertexShader = sh.vertexShader
       .replace('#include <common>', '#include <common>\nvarying vec3 vBw;')
       .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvBw = (modelMatrix * vec4(transformed,1.0)).xyz;');
@@ -718,8 +718,8 @@ function makeBanks(rng, poolRadius) {
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', '#include <common>\nvarying float vLy;')
       .replace('#include <color_fragment>', `#include <color_fragment>
-        vec3 trunkC = vec3(0.30, 0.22, 0.15);
-        vec3 leafC = vec3(0.07, 0.20, 0.12);
+        vec3 trunkC = vec3(0.37, 0.29, 0.20);
+        vec3 leafC = vec3(0.12, 0.30, 0.17);
         diffuseColor.rgb = mix(trunkC, leafC * (0.85 + 0.3 * fract(vLy * 2.17)), smoothstep(1.3, 1.5, vLy));`);
   };
   const treeCount = 46;
@@ -879,7 +879,7 @@ function makeWater(poolRadius, tint, sunDir) {
       tRefr: { value: rt.texture },
       uRes: { value: new THREE.Vector2(2, 2) },
       uTint: { value: new THREE.Color(tint) },
-      uSky: { value: new THREE.Color(0xcfe6da) },
+      uSky: { value: new THREE.Color(0xe6f3f7) },
       uSun: { value: sunDir.clone().normalize() },
       uRadius: { value: poolRadius },
       uRipples: { value: ripples },
@@ -1658,20 +1658,20 @@ function save() {
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.02;
+renderer.toneMappingExposure = 1.12;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xbcd9cd);
-scene.fog = new THREE.Fog(0xbcd9cd, 30, 68);
+scene.background = new THREE.Color(0xd8eef4);
+scene.fog = new THREE.Fog(0xd8eef4, 34, 80);
 
 const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 120);
 const CAM_BASE = new THREE.Vector3(0, 12.0, 16.5);
 camera.position.copy(CAM_BASE);
 camera.lookAt(0, -0.8, -1.5);
 
-const sun = new THREE.DirectionalLight(0xfff5e2, 1.15);
+const sun = new THREE.DirectionalLight(0xfff5e2, 1.3);
 sun.position.set(8, 14, 5);
 scene.add(sun);
-scene.add(new THREE.HemisphereLight(0xcae8da, 0x46523e, 0.75));
+scene.add(new THREE.HemisphereLight(0xe4f3f7, 0x7d8a68, 0.9));
 
 // ---------------- data ----------------
 const DATA = JSON.parse(document.getElementById('species-data').textContent);
@@ -2004,6 +2004,7 @@ window.__game = {
   endFight,
   state: () => ({ mode: G.mode, tackle: tackle.state, catches: G.catches, pool: G.poolIdx, tension: G.tension }),
 };
+
 
 </script>
 </body>
